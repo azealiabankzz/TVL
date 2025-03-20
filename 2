@@ -300,19 +300,6 @@ local function isSizeMatch(size)
     return math.abs(size.X - 0.124) < 0.01 and math.abs(size.Y - 6.944) < 0.01 and math.abs(size.Z - 37.45) < 0.01
 end
 
-local garage = game.Workspace:FindFirstChild("Buildings") and game.Workspace.Buildings:FindFirstChild("Garage")
-
-while true do
-    if garage then
-        for _, obj in ipairs(garage:GetDescendants()) do
-            if obj:IsA("BasePart") and isSizeMatch(obj.Size) then
-                obj:Destroy()
-            end
-        end
-    end
-    wait(1)
-end
-
 local targetSize = Vector3.new(73.965, 1, 12.874)
 local targetParent = game.Workspace.Buildings.MikaelsonEstate
 
