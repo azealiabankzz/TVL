@@ -311,20 +311,6 @@ if playerGui then
     end
 end
 
-local targetSize = Vector3.new(73.965, 1, 12.874)
-local targetParent = game.Workspace.Buildings.MikaelsonEstate
-
-local function destroyMatchingParts()
-    while true do
-        for _, part in pairs(targetParent:GetDescendants()) do
-            if part:IsA("Part") and (part.Size - targetSize).Magnitude < 0.1 then
-                part:Destroy()
-            end
-        end
-        wait(1)
-    end
-end
-
 local function isSizeMatch(size)
     return math.abs(size.X - 0.124) < 0.01 and math.abs(size.Y - 6.944) < 0.01 and math.abs(size.Z - 37.45) < 0.01
 end
