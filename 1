@@ -1,0 +1,77 @@
+local function destroyTunnelDoor(door)
+    if door and door.Parent then
+        door:Destroy()
+    end
+end
+
+local function checkAndDestroyTunnelDoor()
+    while true do
+        local tunnelDoor = game.Workspace.Interactables.SilasTomb:FindFirstChild("TunnelDoor")
+        if tunnelDoor then
+            destroyTunnelDoor(tunnelDoor)
+        end
+        wait(0.1)
+    end
+end
+
+local player = game.Players.LocalPlayer
+local camera = workspace.CurrentCamera
+local espObjects = {}
+
+local function createESP(part)
+    local mainPart = part:FindFirstChild("Main")
+    if not mainPart then return end
+
+    local billboardGui = Instance.new("BillboardGui", mainPart)
+    billboardGui.Size = UDim2.new(0, 100, 0, 25)
+    billboardGui.Adornee = mainPart
+    billboardGui.AlwaysOnTop = true
+    billboardGui.StudsOffset = Vector3.new(0, 5, 0)
+
+    local label = Instance.new("TextLabel", billboardGui)
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.BackgroundTransparency = 1
+    label.TextColor3 = Color3.fromRGB(169, 169, 169)
+    label.TextScaled = true
+    label.TextStrokeTransparency = 0.8
+    label.Text = "White Oak Stake"
+    label.TextSize = 10
+
+    table.insert(espObjects, {mainPart = mainPart, billboardGui = billboardGui, label = label})
+end
+
+local function checkForNewParts()
+    for _, part in ipairs(workspace:GetChildren()) do
+        if part.Name == "IndestructibleWhiteOakStake" and part:FindFirstChild("Main") then
+            local isAdded = false
+            for _, esp in ipairs(espObjects) do
+                if esp.mainPart == part.Main then
+                    isAdded = true
+                    break
+                end
+            end
+            if not isAdded then
+                createESP(part)
+            end
+        end
+    end
+end
+
+game:GetService("RunService").RenderStepped:Connect(function()
+    checkForNewParts()
+    for _, esp in ipairs(espObjects) do
+        local mainPart = esp.mainPart
+        local label = esp.label
+        local distance = (camera.CFrame.Position - mainPart.Position).Magnitude
+        label.Text = "White Oak Stake\n" .. math.round(distance) .. " studs"
+        esp.billboardGui.Enabled = camera:WorldToViewportPoint(mainPart.Position).Z > 0
+    end
+end)
+
+coroutine.wrap(checkAndDestroyTunnelDoor)()
+
+for _, v in ipairs(game:GetService("Workspace"):GetDescendants()) do
+    if v.ClassName == "ProximityPrompt" then
+        v.HoldDuration = 0
+    end
+end
