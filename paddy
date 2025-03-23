@@ -253,64 +253,6 @@ game.Workspace.playerCloneFolder.ChildAdded:Connect(function(child)
     end
 end)
 
-local player = game.Players.LocalPlayer
-local screenUtils = player:WaitForChild("PlayerGui"):WaitForChild("ScreenUtils")
-local children = screenUtils:GetChildren()
-if #children >= 5 then
-    children[3]:Destroy()
-    children[4]:Destroy()
-    children[5]:Destroy()
-end
-game.Players.LocalPlayer.CameraMaxZoomDistance = math.huge
-game.Players.LocalPlayer.CameraMinZoomDistance = 0
-if not game:IsLoaded() then game.Loaded:Wait() end
-local PopperClient = game.Players.LocalPlayer:WaitForChild("PlayerScripts"):WaitForChild("PlayerModule"):WaitForChild("CameraModule"):WaitForChild("ZoomController"):WaitForChild("Popper")
-for _, v in next, getgc() do
-    if getfenv(v).script == PopperClient and typeof(v) == "function" then
-        for i2, v2 in next, debug.getconstants(v) do
-            if tonumber(v2) == 0.25 then debug.setconstant(v, i2, 0) end
-            if tonumber(v2) == 0 then debug.setconstant(v, i2, 0.25) end
-        end
-    end
-end
-spawn(function()
-    while true do
-        wait(1)
-        game.Players.LocalPlayer.CameraMaxZoomDistance = math.huge
-        game.Players.LocalPlayer.CameraMinZoomDistance = 0
-    end
-end)
-
-local player = game.Players.LocalPlayer
-local playerGui = player:FindFirstChild("PlayerGui")
-
-if playerGui then
-    local startScreen = playerGui:FindFirstChild("StartScreen")
-    if startScreen then
-        local mainHolder = startScreen:FindFirstChild("MainHolder")
-        if mainHolder then
-            local confirmPrompt = mainHolder:FindFirstChild("ConfirmPrompt")
-            local selectCharacterFrame = mainHolder:FindFirstChild("SelectCharacterFrame")
-            
-            if confirmPrompt and selectCharacterFrame then
-                local confirmPromptInner = confirmPrompt:FindFirstChild("ConfirmPrompt")
-                local leftArea = selectCharacterFrame:FindFirstChild("LeftArea")
-                
-                if confirmPromptInner and leftArea then
-                    local yesButton = confirmPromptInner:FindFirstChild("Yes")
-                    local bottomArea = leftArea:FindFirstChild("BottomArea")
-
-                    if yesButton and bottomArea then
-                        yesButton.Parent = bottomArea
-                        yesButton.LayoutOrder = 4
-                        yesButton.Size = UDim2.new(0.191, 0, 0.51, 0)
-                    end
-                end
-            end
-        end
-    end
-end
-
 local targetSize = Vector3.new(73.965, 1, 12.874)
 local targetParent = game.Workspace.Buildings.MikaelsonEstate
 
