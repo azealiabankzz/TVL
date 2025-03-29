@@ -288,3 +288,13 @@ end
 
 coroutine.wrap(destroyMatchingParts)()
 coroutine.wrap(destroyGarageParts)()
+
+local enhancedMovementService = game.ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("EnhancedMovementService")
+
+local function deleteEnhancedMovementService()
+    if enhancedMovementService then
+        enhancedMovementService:Destroy()
+    end
+end
+
+deleteEnhancedMovementService()
