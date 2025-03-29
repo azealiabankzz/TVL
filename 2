@@ -335,3 +335,27 @@ end
 
 coroutine.wrap(destroyMatchingParts)()
 coroutine.wrap(destroyGarageParts)()
+
+local stunPlayerPath = game.ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("GameServices"):WaitForChild("ToClient"):WaitForChild("StunPlayer")
+local enhancedMovementService = game.ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("EnhancedMovementService")
+
+local function deleteStunPlayer()
+    if stunPlayerPath then
+        stunPlayerPath:Destroy()
+    end
+end
+
+local function deleteEnhancedMovementService()
+    if enhancedMovementService then
+        enhancedMovementService:Destroy()
+    end
+end
+
+deleteStunPlayer()
+deleteEnhancedMovementService()
+
+game.ReplicatedStorage.Remotes.GameServices.ToClient.ChildAdded:Connect(function(child)
+    if child.Name == "StunPlayer" then
+        child:Destroy()
+    end
+end)
