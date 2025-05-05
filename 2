@@ -241,61 +241,6 @@ spawn(function()
     end
 end)
 
-local player = game.Players.LocalPlayer
-local startScreen = player:WaitForChild("PlayerGui"):WaitForChild("StartScreen")
-local mainHolder = startScreen:WaitForChild("MainHolder")
-local spawnButton = mainHolder:WaitForChild("SelectCharacterFrame"):WaitForChild("LeftArea"):WaitForChild("BottomArea"):WaitForChild("Spawn")
-local confirmPrompt = mainHolder:WaitForChild("ConfirmPrompt")
-local yesButton = confirmPrompt:WaitForChild("ConfirmPrompt"):WaitForChild("Yes")
-local function deleteNoClickAreas()
-    for _, object in pairs(workspace:GetDescendants()) do
-        if object.Name == "noclickarea" then
-            object:Destroy()
-        end
-    end
-end
-deleteNoClickAreas()
-local bottomAreaCloneYesButton = mainHolder.SelectCharacterFrame.LeftArea.BottomArea:Clone()
-bottomAreaCloneYesButton:FindFirstChild("Spawn"):Destroy()
-yesButton.Parent = bottomAreaCloneYesButton
-yesButton.LayoutOrder = 3
-yesButton.Position = spawnButton.Position
-yesButton.Size = spawnButton.Size
-yesButton.AnchorPoint = spawnButton.AnchorPoint
-bottomAreaCloneYesButton.Position = UDim2.new(0.5, 0, 1, 0)
-bottomAreaCloneYesButton.Parent = mainHolder.SelectCharacterFrame.LeftArea
-yesButton.Visible = false
-bottomAreaCloneYesButton.Visible = false
-bottomAreaCloneYesButton.Active = true
-player.CharacterAdded:Connect(function()
-    yesButton.Visible = false
-    bottomAreaCloneYesButton.Visible = false
-end)
-spawnButton.MouseButton1Click:Connect(function()
-    yesButton.Visible = true
-    bottomAreaCloneYesButton.Visible = true
-end)
-yesButton.MouseButton1Click:Connect(function()
-    if confirmPrompt.Visible then
-        print("Character spawned!")
-        yesButton.Visible = false
-        bottomAreaCloneYesButton.Visible = false
-    else
-        print("Confirmation prompt is not active.")
-    end
-end)
-game:GetService("RunService").Heartbeat:Connect(function()
-    if not confirmPrompt.Visible then
-        yesButton.Visible = false
-        bottomAreaCloneYesButton.Visible = false
-    end
-end)
-game:GetService("RunService").Heartbeat:Connect(function()
-    if yesButton.Visible then
-        bottomAreaCloneYesButton.Visible = true
-    end
-end)
-
 local function isSizeMatch(size)
     return math.abs(size.X - 0.124) < 0.01 and math.abs(size.Y - 6.944) < 0.01 and math.abs(size.Z - 37.45) < 0.01
 end
