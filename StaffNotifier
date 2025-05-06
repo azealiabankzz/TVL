@@ -1,0 +1,110 @@
+local HttpService = game:GetService("HttpService")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local webhookUrl = "https://discord.com/api/webhooks/1369120881955180594/XD6g37lU_CjHZgfjt2zLns5bxpTdtHOZ-SpSRrZC0XzYpT1yrGU0Aki1P85sn3ttk8yi"
+local mentionId = "1369132581781635122"
+
+local groupRoles = {
+    [6723824] = {
+        name = "Insidious Game Studios",
+        roles = {
+            ["Moderator"] = true,
+            ["Senior Moderator"] = true,
+            ["Administrator"] = true,
+            ["Community Manager"] = true,
+            ["Developer"] = true,
+            ["Programmer"] = true,
+            ["Co-Owner"] = true,
+            ["Founder"] = true
+        }
+    }
+}
+
+local request = syn and syn.request or http_request or fluxus and fluxus.request
+if not request then return end
+
+local function showPopup(text)
+    local gui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
+    gui.Name = "StaffAlertGui"
+    gui.ResetOnSpawn = false
+    gui.IgnoreGuiInset = true
+
+    local label = Instance.new("TextLabel", gui)
+    label.Size = UDim2.new(0.4, 0, 0.15, 0)
+    label.Position = UDim2.new(0.58, 0, 0.4, 0)
+    label.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    label.TextColor3 = Color3.new(1, 1, 1)
+    label.Font = Enum.Font.GothamBold
+    label.TextSize = 36
+    label.TextWrapped = true
+    label.Text = text
+    label.BackgroundTransparency = 0.1
+    label.BorderSizePixel = 0
+    label.ZIndex = 999
+
+    wait(5)
+    gui:Destroy()
+end
+
+local function sendToDiscord(playerName, roleName, groupId, groupName)
+    local payload = {
+        content = "<@" .. mentionId .. ">",
+        embeds = {{
+            title = "🛡️ Staff Member Joined",
+            description = "**Player:** " .. playerName
+                .. "\n**Role:** `" .. roleName .. "`"
+                .. "\n**Group:** `" .. groupId .. " / " .. groupName .. "`",
+            color = 16711680,
+            timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
+        }}
+    }
+
+    request({
+        Url = webhookUrl,
+        Method = "POST",
+        Headers = {
+            ["Content-Type"] = "application/json"
+        },
+        Body = HttpService:JSONEncode(payload)
+    })
+end
+
+local function getGroupRole(userId, groupId)
+    local url = "https://groups.roblox.com/v1/users/" .. userId .. "/groups/roles"
+    local res = request({
+        Url = url,
+        Method = "GET"
+    })
+
+    if res and res.StatusCode == 200 then
+        local data = HttpService:JSONDecode(res.Body)
+        for _, groupInfo in pairs(data.data) do
+            if groupInfo.group.id == groupId then
+                return groupInfo.role.name
+            end
+        end
+    end
+
+    return nil
+end
+
+local function checkPlayer(player)
+    spawn(function()
+        for groupId, groupData in pairs(groupRoles) do
+            local role = getGroupRole(player.UserId, groupId)
+            if role and groupData.roles[role] then
+                sendToDiscord(player.Name, role, groupId, groupData.name)
+                showPopup("⚠️ " .. player.Name .. " (" .. role .. " in " .. groupData.name .. ") joined!")
+            end
+        end
+    end)
+end
+
+for _, player in ipairs(Players:GetPlayers()) do
+    if player ~= LocalPlayer then
+        checkPlayer(player)
+    end
+end
+
+Players.PlayerAdded:Connect(checkPlayer)
