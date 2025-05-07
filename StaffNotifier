@@ -3,7 +3,7 @@ local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
 local webhookUrl = "https://discord.com/api/webhooks/1369120881955180594/XD6g37lU_CjHZgfjt2zLns5bxpTdtHOZ-SpSRrZC0XzYpT1yrGU0Aki1P85sn3ttk8yi"
-local mentionId = "1369132581781635122"
+local roleId = "1369132581781635122" -- This should be the Discord ROLE ID
 
 local groupRoles = {
     [6723824] = {
@@ -49,7 +49,7 @@ end
 
 local function sendToDiscord(playerName, roleName, groupId, groupName)
     local payload = {
-        content = "<@" .. mentionId .. ">",
+        content = "<@&" .. roleId .. ">", -- Role mention format
         embeds = {{
             title = "🛡️ Staff Member Joined",
             description = "**Player:** " .. playerName
